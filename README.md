@@ -23,10 +23,13 @@ A non-destructive prototype to stop hostile autonomous vehicles (AVs) by disrupt
 - [Immediate Actions](#immediate-actions-oct-12-2025-1222-am--08)
 
 ## Problem Overview
-Hostile AVs (hijacked or malfunctioning) pose public safety risks, acting as "2-ton missiles." Current countermeasures (e.g., EMP, kinetic) are destructive or impractical for first responders. 
-This project fills the gap with a portable, non-destructive device that forces AV emergency stops by disrupting sensor perception. **Why included?** The problem defines design constraints (15m range, 20 km/h, non-destructive). 
-See `docs/problem_brief.md` for full 5W1H analysis (WHO: HTX, WHAT: sensor disruption, WHERE: roadside, WHEN: Nov 12, WHY: safety gap, HOW: laser/LED pulses). 
-Logical link: Guides hardware choices in `hardware/parts_list.md` and tasks in `docs/checklists.md`.
+>Hostile AVs (hijacked or malfunctioning) pose public safety risks, acting as "2-ton missiles." Current countermeasures (e.g., EMP, kinetic) are destructive or impractical for first responders.
+>
+>This project fills the gap with a portable, non-destructive device that forces AV emergency stops by disrupting sensor perception. **Why included?** The problem defines design constraints (15m range, 20 km/h, non-destructive).
+>
+>See `docs/problem_brief.md` for full 5W1H analysis (WHO: HTX, WHAT: sensor disruption, WHERE: roadside, WHEN: Nov 12, WHY: safety gap, HOW: laser/LED pulses).
+>
+>Logical link: Guides hardware choices in `hardware/parts_list.md` and tasks in `docs/checklists.md`.
 
 ## Solution
 The Dual-Mode AV Disruptor uses a Raspberry Pi Zero/4 to control:
