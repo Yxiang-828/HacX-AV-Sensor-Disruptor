@@ -13,13 +13,13 @@ def check_safety():
         GPIO.output(FAN_PIN, GPIO.HIGH)  # Fan on
     else:
         GPIO.output(FAN_PIN, GPIO.LOW)   # Fan off
-    
+
     if temp and temp > 50:
         print("Critical overheat: Shutting down")
         return False
-    
+
     if GPIO.input(FUSE_PIN) == GPIO.LOW:
         print("Fuse blown: Shutting down")
         return False
-    
+
     return True

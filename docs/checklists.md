@@ -17,7 +17,7 @@ Prototype for HacX hackathon (Nov 12, 2025). Non-destructive disruption of hosti
 
 - [ ] **Parts Ordering**:
   - Order from `parts_list.md`: RPi Zero ($15), IR laser (1550nm, $50), IR LEDs (850nm, $15), mmWave (RD-03D/MR60FDA2, $25), photodiode (BPW34, $2), SPDT toggle ($5), battery (10000mAh, $30), heatsink ($5), lens ($10), filament ($20), DS18B20 temp sensor ($5), MOSFET (IRLZ44N, $2), diode (1N4001, $1), capacitor (100µF, $1), misc ($5).
-  - Expedite shipping (arrive by Oct 18). Budget: ~$335.
+  - Expedite shipping (arrive by Oct 18).   - Budget: ~$342.
   - Backup: Local electronics store for resistors, diodes.
 
 - [ ] **Initial Wiring**:
@@ -70,7 +70,7 @@ Prototype for HacX hackathon (Nov 12, 2025). Non-destructive disruption of hosti
 ## Things to Note
 - **Hardware Risks**:
   - **Overheating**: Laser/LEDs hot in smoke mode (>5 min). Use `temp_monitor.py`; shutdown if >50°C. Add fan ($5) if persistent.
-  - **Battery**: Smoke (~80W, **28 min max**); smart (~30W, **1.2h**). Recharge between demos. Math: 10000mAh × 3.7V = 37Wh; 37Wh/80W = 0.46h, 37Wh/30W = 1.23h.
+  - **Battery**: Smoke (~80W, 28 min); smart (~30W, 1.2h). Recharge between demos. Math: 10000mAh × 3.7V = 37Wh; 37Wh/80W = 0.46h, 37Wh/30W = 1.23h.
   - **Wiring**: Check MOSFET polarity (IRLZ44N: Gate to GPIO via 1kΩ). Test with `hardware_test.py` to avoid shorts.
   - **Range**: Rain/fog cuts laser ~20-30%. Test indoors; note for v2.
 

@@ -7,7 +7,7 @@ Non-destructive prototype to stop hostile autonomous vehicles (AVs) by disruptin
 - **Smoke Bomb Mode**: Chaotic IR/RF emissions to overwhelm sensors.
 - **Smart Obstacle Mode**: Targeted pulses to spoof obstacles, energy-efficient.
 - Toggle switch for instant mode change.
-- Handheld, ~$300, 1kg, battery-powered.
+- **Handheld, ~$342, <500g, battery-powered.**
 
 ## Setup
 

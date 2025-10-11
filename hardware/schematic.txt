@@ -1,52 +1,84 @@
-# Dual-Mode AV Disruptor Wiring Diagram (Updated)
+# Dual-Mode AV Disruptor Wiring Diagram
 
 ## Components
-- RPi Zero (or 4)
-- IR Laser Diode (1550nm, via driver)
-- IR LED Array (850nm)
-- mmWave Radar Module (24GHz, e.g., RD-03D or Seeed MR60FDA2) - for motion detection proxy
+- RPi Zero/4
+- IR Laser Diode (1550nm, via MOSFET)
+- IR LED Array (850nm, via MOSFET)
+- mmWave Radar (RD-03D/MR60FDA2, UART)
+- IR Photodiode (BPW34)
+- DS18B20 Temp Sensor (1-Wire)
 - SPDT Toggle Switch
-- Battery Pack (3.7V, 10000mAh)
-- IR Photodiode (BPW34) - for LiDAR pulse detection
-- NPN Transistor (2N3904) + 10kΩ Resistor - for photodiode amp
+- Push Button (Manual Trigger)
+- Battery (10000mAh, 3.7V)
+- IRLZ44N MOSFET, 1N4001 Diode, 100µF Capacitor
+- 5V Fan
+- 10A Fuse
 
 ## Connections
 1. **Toggle Switch (SPDT)**:
-   - Middle pin: RPi GPIO 21
-   - One end: RPi 3.3V
-   - Other end: RPi GND
-   - Note: Enable internal pull-up in code
+   - Middle: GPIO 21
+   - One end: 3.3V
+   - Other end: GND
+   - Note: Internal pull-up
 
 2. **IR Laser Diode**:
-   - Positive: GPIO 18 (via MOSFET driver)
+   - Positive: IRLZ44N MOSFET Drain
    - Negative: GND
-   - Driver: 3.3V control, 5V power from battery
-   - Add 1kΩ resistor for safety
+   - MOSFET Gate: GPIO 18 via 1kΩ
+   - MOSFET Source: GND
+   - Power: 5V from battery
+   - Diode: 1N4001 across laser
 
 3. **IR LED Array**:
-   - Positive: GPIO 19 (via MOSFET driver)
+   - Positive: IRLZ44N MOSFET Drain
    - Negative: GND
+   - MOSFET Gate: GPIO 19 via 1kΩ
+   - MOSFET Source: GND
    - Power: 5V from battery
-   - Add 1kΩ resistor
+   - Diode: 1N4001 across LEDs
 
-4. **mmWave Radar Module**:
+4. **mmWave Radar**:
    - 5V: RPi 5V
    - GND: RPi GND
-   - TX: RPi GPIO 15 (RXD)
-   - RX: RPi GPIO 14 (TXD)
-   - Note: UART interface, 256000 baud
+   - TX: GPIO 15 (RXD)
+   - RX: GPIO 14 (TXD)
 
-5. **IR Photodiode Circuit**:
-   - Photodiode Anode: RPi 3.3V via 10kΩ pull-up
-   - Photodiode Cathode: Base of NPN transistor (2N3904)
-   - Transistor Collector: RPi GPIO 22
+5. **IR Photodiode**:
+   - Anode: 3.3V via 10kΩ pull-up
+   - Cathode: 2N3904 transistor Base
+   - Transistor Collector: GPIO 22
    - Transistor Emitter: GND
-   - Note: Active low—pulse pulls GPIO low.
+   - Note: Active low
 
-6. **Battery**:
-   - Positive: RPi 5V pin (via regulator if needed)
-   - Negative: Common GND
-   - Add power switch for safety
+6. **DS18B20 Temp Sensor**:
+   - VDD: 3.3V
+   - GND: RPi GND
+   - Data: GPIO 23 via 4.7kΩ pull-up
+   - Note: 1-Wire enabled
+
+7. **5V Fan**:
+   - Positive: GPIO 24 via 1kΩ
+   - Negative: GND
+   - Power: 5V from battery
+
+8. **10A Fuse**:
+   - Inline: Battery positive to RPi 5V
+   - Status: GPIO 25 (LOW if blown, pull-up)
+
+9. **Manual Trigger Button**:
+   - One end: GPIO 26
+   - Other end: GND
+   - Note: Internal pull-up
+
+10. **Battery**:
+    - Positive: Fuse → RPi 5V (via regulator)
+    - Negative: Common GND
+    - Capacitor: 100µF across battery
+
+## Notes
+- Test with multimeter.
+- Use heatsink on laser/LEDs.
+- Enclosure: Align emitters for 15m.
 
 ## MOSFET Driver Circuit (for Laser/LED)
 - Use IRLZ44N MOSFET: Gate to GPIO (via 1kΩ), Source to GND, Drain to emitter positive.
