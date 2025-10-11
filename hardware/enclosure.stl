@@ -1,0 +1,9 @@
+# Placeholder for enclosure.stl
+- Design a 20x10x5 cm box in FreeCAD/Tinkercad.
+- Include holes for:
+  - IR laser (front, 1cm diam)
+  - LED array (front, 2cm diam)
+  - RF module antenna (front, 1cm)
+  - Toggle switch (top, 0.5cm)
+  - Battery access (back, 5x3 cm)
+- Print with PLA filament (~$20).

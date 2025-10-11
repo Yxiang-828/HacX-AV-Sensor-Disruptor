@@ -1,0 +1,49 @@
+# Dual-Mode AV Disruptor Wiring Diagram
+
+## Components
+- RPi Zero (or 4)
+- IR Laser Diode (1550nm, via driver)
+- IR LED Array (850nm)
+- mmWave RF Module (77GHz band, e.g., AWR1642)
+- RTL-SDR (USB for signal detection)
+- SPDT Toggle Switch
+- Battery Pack (3.7V, 10000mAh)
+
+## Connections
+1. **Toggle Switch (SPDT)**:
+   - Middle pin: RPi GPIO 21
+   - One end: RPi 3.3V
+   - Other end: RPi GND
+   - Note: Enable internal pull-up in code
+
+2. **IR Laser Diode**:
+   - Positive: GPIO 18 (via driver circuit, e.g., MOSFET)
+   - Negative: GND
+   - Driver: 3.3V control, 5V power from battery
+   - Add 1kΩ resistor for safety
+
+3. **IR LED Array**:
+   - Positive: GPIO 19 (via driver/MOSFET)
+   - Negative: GND
+   - Power: 5V from battery
+   - Add 1kΩ resistor
+
+4. **mmWave RF Module**:
+   - Control pin: GPIO 20 (for PWM/noise trigger)
+   - Power: 5V from battery
+   - GND: Common with RPi
+   - Note: Check module datasheet for exact pins
+
+5. **RTL-SDR**:
+   - USB connection to RPi
+   - Antenna: External whip for 77GHz downconverted signals
+
+6. **Battery**:
+   - Positive: RPi 5V pin (via regulator if needed)
+   - Negative: Common GND
+   - Add power switch for safety
+
+## Notes
+- Use heatsink on laser/RF module to prevent overheating.
+- Test connections with multimeter before powering on.
+- Enclosure: Ensure emitter alignment (15m range needs collimated laser).
