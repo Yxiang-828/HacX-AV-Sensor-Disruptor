@@ -13,3 +13,9 @@
 - **Misc (wires, resistors)**: $10, local electronics store
 
 **Total**: ~$300-350
+
+- **mmWave Radar Module (e.g., RD-03D or Seeed MR60FDA2)**: $25, [Core Electronics](https://core-electronics.com.au/rd-03d-mmwave-radar-sensor.html) or [Seeed Studio](https://www.seeedstudio.com/MR60FDA2-60GHz-mmWave-Sensor-Fall-Detection-Module-p-5946.html) – for radar/motion detection up to 8m (proxy for AV).
+- **IR Photodiode (e.g., BPW34)**: $2, [Amazon](https://www.amazon.com/s?k=BPW34+photodiode) – for LiDAR pulse detection.
+- **NPN Transistor (e.g., 2N3904) + 10kΩ Resistor**: $3, local – for photodiode amp circuit.
+
+**Updated Total**: ~$330

@@ -1,4 +1,4 @@
-# Dual-Mode AV Disruptor Wiring Diagram
+# Dual-Mode AV Disruptor Wiring Diagram (Updated)
 
 ## Components
 - RPi Zero (or 4)
@@ -8,6 +8,10 @@
 - RTL-SDR (USB for signal detection)
 - SPDT Toggle Switch
 - Battery Pack (3.7V, 10000mAh)
+
+## Components (Additions)
+- mmWave Radar: UART interface
+- IR Photodiode: For LiDAR detection
 
 ## Connections
 1. **Toggle Switch (SPDT)**:
@@ -42,6 +46,27 @@
    - Positive: RPi 5V pin (via regulator if needed)
    - Negative: Common GND
    - Add power switch for safety
+
+## Connections (Additions)
+7. **mmWave Radar Module**:
+   - 5V: RPi 5V
+   - GND: RPi GND
+   - TX: RPi GPIO 15 (RXD)
+   - RX: RPi GPIO 14 (TXD)
+
+8. **IR Photodiode Circuit**:
+   - Photodiode Anode: RPi 3.3V via 10kΩ pull-up
+   - Photodiode Cathode: Base of NPN transistor (2N3904)
+   - Transistor Collector: RPi GPIO 22
+   - Transistor Emitter: GND
+   - Note: Active low—pulse pulls GPIO low.
+
+## MOSFET Driver Circuit (for Laser/LED/RF)
+- Use IRLZ44N MOSFET: Gate to GPIO (via 1kΩ), Source to GND, Drain to emitter positive.
+- Power: 5V from battery to emitter via Drain.
+- Diode: Add 1N4001 across emitter for back-EMF protection.
+- Capacitor: 100µF across battery for noise reduction.
+- Wiring: GPIO → 1kΩ → MOSFET Gate; Emitter + → MOSFET Drain; Emitter - → GND.
 
 ## Notes
 - Use heatsink on laser/RF module to prevent overheating.
