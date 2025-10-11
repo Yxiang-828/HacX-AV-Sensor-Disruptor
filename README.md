@@ -1,23 +1,22 @@
 # Dual-Mode AV Disruptor
 
-A non-destructive prototype to stop hostile autonomous vehicles (AVs) by disrupting their sensors (LiDAR, camera, radar) at a 15m range for speeds up to 20 km/h. Built for the HacX hackathon (HTX + Microsoft, Nov 12, 2025). Repository: github.com/Yxiang-828/HacX-AV-Sensor-Disruptor.
+A non-destructive prototype to stop hostile autonomous vehicles (AVs) by disrupting their sensors (LiDAR, camera, radar) at a 15m range for speeds up to 20 km/h. Built for the HacX hackathon (HTX + Microsoft, Nov 12, 2025). Repository: [github.com/Yxiang-828/HacX-AV-Sensor-Disruptor](https://github.com/Yxiang-828/HacX-AV-Sensor-Disruptor).
 
 ## Problem Overview
-Hostile AVs (hijacked or malfunctioning) pose public safety risks, acting as "2-ton missiles." Current countermeasures (e.g., EMP, kinetic) are destructive or impractical for first responders. This project fills the gap with a portable, non-destructive device that forces AV emergency stops by disrupting sensor perception. Why included? The problem defines design constraints (15m range, 20 km/h, non-destructive). See docs/problem_brief.md for full 5W1H analysis (WHO: HTX, WHAT: sensor disruption, WHERE: roadside, WHEN: Nov 12, WHY: safety gap, HOW: laser/LED pulses). Logical link: Guides hardware choices in hardware/parts_list.md and tasks in docs/checklists.md.
+Hostile AVs (hijacked or malfunctioning) pose public safety risks, acting as "2-ton missiles." Current countermeasures (e.g., EMP, kinetic) are destructive or impractical for first responders. This project fills the gap with a portable, non-destructive device that forces AV emergency stops by disrupting sensor perception. **Why included?** The problem defines design constraints (15m range, 20 km/h, non-destructive). See `docs/problem_brief.md` for full 5W1H analysis (WHO: HTX, WHAT: sensor disruption, WHERE: roadside, WHEN: Nov 12, WHY: safety gap, HOW: laser/LED pulses). Logical link: Guides hardware choices in `hardware/parts_list.md` and tasks in `docs/checklists.md`.
+
 ## Solution
-
 The Dual-Mode AV Disruptor uses a Raspberry Pi Zero/4 to control:
+- **Smoke Bomb Mode**: Chaotic IR pulses (1550nm laser, 850nm LEDs) to overwhelm sensors, ensuring a stop in high-threat scenarios.
+- **Smart Obstacle Mode**: Detection-triggered pulses (laser 0.15s at 80% duty, LEDs 0.08s at 60%) to spoof obstacles, saving power for prolonged use.
+- **Detection**: mmWave radar (RD-03D/MR60FDA2, UART) and photodiode (BPW34, GPIO 22) detect AV signals, with manual trigger (GPIO 26) as fallback.
+- **Safety**: DS18B20 temp sensor (GPIO 23), 5V fan (GPIO 24), 10A fuse (GPIO 25).
+- **Specs**: ~$342, <500g, 20x10x5 cm, battery-powered (28 min Smoke, 1.2h Smart).
 
-Smoke Bomb Mode: Chaotic IR pulses (1550nm laser, 850nm LEDs) to overwhelm sensors, ensuring a stop in high-threat scenarios.
-Smart Obstacle Mode: Detection-triggered pulses (laser 0.15s at 80% duty, LEDs 0.08s at 60%) to spoof obstacles, saving power for prolonged use.
-Detection: mmWave radar (RD-03D/MR60FDA2, UART) and photodiode (BPW34, GPIO 22) detect AV signals, with manual trigger (GPIO 26) as fallback.
-Safety: DS18B20 temp sensor (GPIO 23), 5V fan (GPIO 24), 10A fuse (GPIO 25).
-Specs: ~$342, <500g, 20x10x5 cm, battery-powered (28 min Smoke, 1.2h Smart).
-
-Why included? The solution translates the problem into a tangible system, linking to hardware/schematic.txt (wiring) and src/main.py (control logic).
+**Why included?** The solution translates the problem into a tangible system, linking to `hardware/schematic.txt` (wiring) and `src/main.py` (control logic).
 
 ## System Architecture
-The system integrates inputs (toggle switch, detection), processing (RPi GPIO/UART), outputs (laser/LED pulses), and safety checks. The state diagram below shows mode transitions, from boot to mode selection to emission loops, with safety interrupts. Why included? Visualizes runtime behavior—laymen see why dual modes exist (fail-safe vs. efficient), judges see safety integration.
+The system integrates inputs (toggle switch, detection), processing (RPi GPIO/UART), outputs (laser/LED pulses), and safety checks. The state diagram below shows mode transitions, from boot to mode selection to emission loops, with safety interrupts. **Why included?** Visualizes runtime behavior—laymen see why dual modes exist (fail-safe vs. efficient), judges see safety integration.
 
 ```mermaid
 stateDiagram-v2
@@ -42,7 +41,7 @@ stateDiagram-v2
 ```
 
 ## Algo Flow
-The algorithm initializes GPIO, polls the toggle switch (GPIO 21), executes mode-specific logic (Smoke: random pulses; Smart: detection-based), and validates safety. The flowchart below details the steps: boot → setup → mode check → emission → safety loop. Why included? Clarifies code logic (src/main.py, src/smoke_mode.py, src/smart_mode.py) for laymen and shows judges how detection (src/utils.py) triggers outputs.
+The algorithm initializes GPIO, polls the toggle switch (GPIO 21), executes mode-specific logic (Smoke: random pulses; Smart: detection-based), and validates safety. The flowchart below details the steps: boot → setup → mode check → emission → safety loop. **Why included?** Clarifies code logic (`src/main.py`, `src/smoke_mode.py`, `src/smart_mode.py`) for laymen and shows judges how detection (`src/utils.py`) triggers outputs.
 
 ```mermaid
 flowchart TD
@@ -63,17 +62,15 @@ flowchart TD
 ```
 
 ## Hardware Components
+- **Core**: RPi Zero/4, IR laser (1550nm, 100mW, GPIO 18), IR LED array (850nm, 10W, GPIO 19), mmWave radar (RD-03D/MR60FDA2, UART GPIO 14/15), photodiode (BPW34, GPIO 22).
+- **Safety/Control**: DS18B20 temp sensor (GPIO 23), 5V fan (GPIO 24), 10A fuse (GPIO 25), SPDT toggle (GPIO 21), push button (GPIO 26), 10000mAh battery (3.7V, boost to 5V).
+- **Specs**: ~$342 (see `hardware/parts_list.md`), <500g (RPi ~9g, battery ~200g, laser ~50g, LEDs ~100g, misc ~141g), 20x10x5 cm enclosure (`hardware/enclosure.stl`, in progress, Tinkercad export by Oct 16).
 
-Core: RPi Zero/4, IR laser (1550nm, 100mW, GPIO 18), IR LED array (850nm, 10W, GPIO 19), mmWave radar (RD-03D/MR60FDA2, UART GPIO 14/15), photodiode (BPW34, GPIO 22).
-Safety/Control: DS18B20 temp sensor (GPIO 23), 5V fan (GPIO 24), 10A fuse (GPIO 25), SPDT toggle (GPIO 21), push button (GPIO 26), 10000mAh battery (3.7V, boost to 5V).
-Specs: ~$342 (see hardware/parts_list.md), <500g (RPi ~9g, battery ~200g, laser ~50g, LEDs ~100g, misc ~141g), 20x10x5 cm enclosure (hardware/enclosure.stl).
-
-Why included? Details components for reproducibility, linking to parts_list.md (sourcing) and schematic.txt (wiring).
+**Why included?** Details components for reproducibility, linking to `parts_list.md` (sourcing) and `schematic.txt` (wiring).
 
 ## Quick Start
-
 ### 1. Hardware Setup
-```
+```bash
 git clone https://github.com/Yxiang-828/HacX-AV-Sensor-Disruptor
 cd HacX-AV-Sensor-Disruptor
 chmod +x setup.sh
@@ -81,51 +78,56 @@ chmod +x setup.sh
 ```
 
 ### 2. Wiring
-Follow hardware/schematic.txt for GPIO connections (e.g., laser on GPIO 18, mmWave on UART). Why included? Ensures correct assembly, links to checklists.md (wiring tasks) and parts_list.md (components).
+Follow `hardware/schematic.txt` for GPIO connections:
+- GPIO 18: Laser (MOSFET gate).
+- GPIO 19: LED array (MOSFET gate).
+- GPIO 21: Toggle switch (mode selection).
+- GPIO 22: Photodiode (LiDAR detection).
+- GPIO 23: DS18B20 (temperature).
+- GPIO 24: Fan (cooling).
+- GPIO 25: Fuse monitor.
+- GPIO 26: Manual trigger button.
+- UART (GPIO 14/15): mmWave radar.
+**Why included?** Ensures correct assembly, links to `checklists.md` (wiring tasks) and `parts_list.md` (components).
 
 ### 3. Operation
-```
+```bash
 python3 src/main.py
 ```
-
-GPIO 21 HIGH: Smoke mode (chaotic pulses).
-GPIO 21 LOW: Smart mode (detection via mmWave/photodiode or manual trigger on GPIO 26).
-Why included? Explains runtime for users, links to src/main.py (code) and checklists.md (operation tests).
+- GPIO 21 HIGH: Smoke mode (chaotic pulses).
+- GPIO 21 LOW: Smart mode (detection via mmWave/photodiode or manual trigger on GPIO 26).
+**Why included?** Explains runtime for users, links to `src/main.py` (code) and `checklists.md` (operation tests).
 
 ## Testing & Validation
 ### CARLA Simulation
-```
+```bash
 cd tests/
 python3 carla_test.py  # Injects LiDAR/camera noise, logs vehicle.get_control() for braking
 ```
-
-Why included? Validates algo in sim, links to prototype_notes.md (results) and checklists.md (Week 2 test plan).
+Requires Ubuntu with GPU (or VM, ~2h setup). **Why included?** Validates algo in sim, links to `prototype_notes.md` (results) and `checklists.md` (Week 2 test plan).
 
 ### Hardware Testing
-```
+```bash
 python3 tests/hardware_test.py  # Tests GPIO, emitters, detection, temp, fan, fuse
 ```
-
-RC Car: Disrupt at 5-15m, expect stop in <3s.
-Sensor Puck: Direct LiDAR/camera tests.
-Why included? Verifies hardware, links to prototype_notes.md (logs) and checklists.md (Week 2).
+- RC Car: Disrupt at 5-15m, expect >80% stop rate in <3s.
+- Sensor Puck: Direct LiDAR/camera tests.
+**Why included?** Verifies hardware, links to `prototype_notes.md` (logs) and `checklists.md` (Week 2).
 
 ### Demo Protocol
-
-Power on (LED indicators show status).
-Flip toggle (GPIO 21) to select mode.
-Aim at AV sensors (15m range).
-Verify stop via RC car or CARLA video.
-Monitor safety (temp, fuse via src/safety.py).Why included? Outlines judge-facing demo, links to pitch_slides.md (presentation).
+1. Power on (LED indicators show status).
+2. Flip toggle (GPIO 21) to select mode.
+3. Aim at AV sensors (15m range).
+4. Verify stop via RC car (>80% success, <3s) or CARLA video.
+5. Monitor safety (temp, fuse via `src/safety.py`).
+**Why included?** Outlines judge-facing demo, links to `pitch_slides.md` (presentation).
 
 ## Safety Features
-
-Temperature: DS18B20 (GPIO 23) monitors, fan (GPIO 24) activates at 40°C, shutdown at 50°C.
-Overcurrent: 10A fuse (GPIO 25) prevents damage.
-Irradiance: LED ~1273 W/m² at 15m, diffuser ready if >1000 W/m².
-Legal: Research prototype, requires IMDA waiver for ops.
-
-Why included? Addresses HTX safety concerns, links to safety.py (code) and schematic.txt (wiring).
+- **Temperature**: DS18B20 (GPIO 23) monitors, fan (GPIO 24) activates at 40°C, shutdown at 50°C.
+- **Overcurrent**: 10A fuse (GPIO 25) prevents damage.
+- **Irradiance**: LED ~1273 W/m² at 15m, diffuser ready if >1000 W/m².
+- **Legal**: Research prototype, requires IMDA waiver for ops.
+**Why included?** Addresses HTX safety concerns, links to `safety.py` (code) and `schematic.txt` (wiring).
 
 ## Project Structure
 ```
@@ -140,7 +142,7 @@ Why included? Addresses HTX safety concerns, links to safety.py (code) and schem
 ├── hardware/               # Physical design
 │   ├── schematic.txt       # Wiring diagram (guides setup.sh, hardware_test.py).
 │   ├── parts_list.md       # Component sources (inputs for checklists.md).
-│   └── enclosure.stl       # 3D model (Tinkercad/FreeCAD, ensures portability).
+│   └── enclosure.stl       # 3D model (Tinkercad/FreeCAD, in progress, due Oct 16).
 ├── docs/                   # Documentation
 │   ├── problem_brief.md    # Challenge analysis (basis for design, pitch_slides.md).
 │   ├── checklists.md       # Tasks/risks (tracks progress, links to parts_list.md).
@@ -152,23 +154,28 @@ Why included? Addresses HTX safety concerns, links to safety.py (code) and schem
 └── requirements.txt        # Dependencies (used by setup.sh).
 ```
 
-Why included? Maps repo for judges, links files to workflow (problem → build → test → demo).
+**Why included?** Maps repo for judges, links files to workflow (problem → build → test → demo).
 
 ## HacX Competition Readiness
+- **Innovation (8.5/10)**: Dual-mode hybrid, portable integration.
+- **Functionality (7.5→9)**: CARLA/hardware tests, manual trigger.
+- **Practicality (8→9)**: $342, <500g, safety features (fan, fuse).
+- **Problem Fit (9/10)**: Meets 15m/20 km/h, defeats sensor redundancy.
+- **Target**: 9.5/10 for Top 3 (per judge feedback, addressing untested code, battery math).
 
-Innovation (8.5/10): Dual-mode hybrid, portable integration.
-Functionality (7.5→9): CARLA/hardware tests, manual trigger.
-Practicality (8→9): $342, <500g, safety features (fan, fuse).
-Problem Fit (9/10): Meets 15m/20 km/h, defeats sensor redundancy.
-Target: 9.5/10 for Top 3 (per judge feedback, addressing untested code, battery math).
+**Why included?** Summarizes strengths for judges, links to `pitch_slides.md` (demo plan) and `prototype_notes.md` (test results).
 
-Why included? Summarizes strengths for judges, links to pitch_slides.md (demo plan) and prototype_notes.md (test results).
+## Immediate Actions (Oct 12, 2025, 12:22 AM +08)
+1. **Update README**: Save this file to repo root, replacing old README.
+2. **Commit Changes**:
+   ```bash
+   git add README.md
+   git commit -m "Updated README with fixed GPIO (18/19/22/23), enclosure status, demo metrics (>80% stop), CARLA setup, parts backup"
+   git push
+   ```
+3. **Order Parts**: From `hardware/parts_list.md` (Amazon Prime 2-day, AliExpress 5-day, ~$342). Backup: Local store (e.g., Sim Lim Square) for LEDs, resistors, fan. Target Oct 18 delivery.
+4. **Run CARLA**: Install on Ubuntu (GPU or VM, ~2h), test `tests/carla_test.py`. Log `vehicle.get_control()` for video by Oct 14.
+5. **Start STL**: Use Tinkercad (tinkercad.com, 30 min) for `hardware/enclosure.stl` (20x10x5 cm, holes per `schematic.txt`). Export by Oct 16.
+6. **Log Tests**: Add to `docs/prototype_notes.md`: “Oct 12: Updated README, started CARLA setup, tested GPIO 21/26.” Commit by Oct 14.
 
-## Immediate Actions (Oct 12, 2025, 12:08 AM +08)
-
-Order Parts: From hardware/parts_list.md (Amazon Prime/AliExpress, ~$342, arrive by Oct 18).
-Run CARLA: Install on Ubuntu, test tests/carla_test.py for video by Oct 14.
-Start STL: Use Tinkercad (30 min) for hardware/enclosure.stl by Oct 16.
-Log Tests: Update docs/prototype_notes.md with initial results (e.g., GPIO tests).
-
-Built for HacX 2025 | Target: Top 3 | Deadline: Nov 12, 2025
+*Built for HacX 2025 | Target: Top 3 | Deadline: Nov 12, 2025*
