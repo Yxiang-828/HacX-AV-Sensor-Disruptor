@@ -1,12 +1,13 @@
 import RPi.GPIO as GPIO
 import time
-from smoke_mode import smoke_bomb_mode
-from smart_mode import smart_obstacle_mode
 
-# GPIO setup
+# GPIO setup first
 GPIO.setmode(GPIO.BCM)
 MODE_PIN = 21  # Toggle switch
 GPIO.setup(MODE_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+
+from smoke_mode import smoke_bomb_mode
+from smart_mode import smart_obstacle_mode
 
 def main():
     current_mode = 'smart'  # Default
