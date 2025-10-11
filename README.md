@@ -2,6 +2,26 @@
 
 A non-destructive prototype to stop hostile autonomous vehicles (AVs) by disrupting their sensors (LiDAR, camera, radar) at a 15m range for speeds up to 20 km/h. Built for the HacX hackathon (HTX + Microsoft, Nov 12, 2025). Repository: [github.com/Yxiang-828/HacX-AV-Sensor-Disruptor](https://github.com/Yxiang-828/HacX-AV-Sensor-Disruptor).
 
+## Table of Contents
+- [Problem Overview](#problem-overview)
+- [Solution](#solution)
+- [Solution Feasibility & Dual-Mode Rationale](#solution-feasibility--dual-mode-rationale)
+  - [Why Dual Modes? Bridging Problem to Solution](#why-dual-modes-bridging-problem-to-solution)
+- [Project Documentation Overview](#project-documentation-overview)
+  - [Development Roadmap (docs/checklists.md)](#-development-roadmap-docschecklistsmd)
+  - [Challenge Analysis (docs/question.md)](#-challenge-analysis-docsquestionmd)
+  - [Pitch Strategy (docs/pitch_slides.md)](#-pitch-strategy-docspitch_slidesmd)
+  - [Build & Test Log (docs/prototype_notes.md)](#-build--test-log-docsprototype_notesmd)
+- [System Architecture](#system-architecture)
+- [Algo Flow](#algo-flow)
+- [Hardware Components](#hardware-components)
+- [Quick Start](#quick-start)
+- [Testing & Validation](#testing--validation)
+- [Safety Features](#safety-features)
+- [Project Structure](#project-structure)
+- [HacX Competition Readiness](#hacx-competition-readiness)
+- [Immediate Actions](#immediate-actions-oct-12-2025-1222-am--08)
+
 ## Problem Overview
 Hostile AVs (hijacked or malfunctioning) pose public safety risks, acting as "2-ton missiles." Current countermeasures (e.g., EMP, kinetic) are destructive or impractical for first responders. This project fills the gap with a portable, non-destructive device that forces AV emergency stops by disrupting sensor perception. **Why included?** The problem defines design constraints (15m range, 20 km/h, non-destructive). See `docs/problem_brief.md` for full 5W1H analysis (WHO: HTX, WHAT: sensor disruption, WHERE: roadside, WHEN: Nov 12, WHY: safety gap, HOW: laser/LED pulses). Logical link: Guides hardware choices in `hardware/parts_list.md` and tasks in `docs/checklists.md`.
 
@@ -13,7 +33,94 @@ The Dual-Mode AV Disruptor uses a Raspberry Pi Zero/4 to control:
 - **Safety**: DS18B20 temp sensor (GPIO 23), 5V fan (GPIO 24), 10A fuse (GPIO 25).
 - **Specs**: ~$342, <500g, 20x10x5 cm, battery-powered (28 min Smoke, 1.2h Smart).
 
-**Why included?** The solution translates the problem into a tangible system, linking to `hardware/schematic.txt` (wiring) and `src/main.py` (control logic).
+Why included? The solution translates the problem into a tangible system, linking to hardware/schematic.txt (wiring) and src/main.py (control logic).
+
+## Solution Feasibility & Dual-Mode Rationale
+
+### Why Dual Modes? Bridging Problem to Solution
+
+The dual-mode approach directly addresses the challenge constraints while maximizing effectiveness against AV sensor redundancies:
+
+**Problem Constraints → Solution Design**:
+- **15m Range + 20 km/h Speed**: Requires immediate, high-power disruption (Smoke Mode) vs. efficient detection-based response (Smart Mode)
+- **Non-Destructive**: IR emissions (1550nm/850nm) are eye-safe and reversible, unlike EMP/kinetic methods
+- **Multiple Sensors**: LiDAR (laser spoofing), cameras (LED dazzle), radar (mmWave proxy detection)
+- **First Responder Use**: Toggle-switch simplicity enables rapid deployment under stress
+
+**Mode Logic Bridge**:
+- **Smoke Bomb Mode**: "Fail-safe" brute force for unknown/high-threat scenarios. Chaotic 80% duty cycle overwhelms all sensors simultaneously, ensuring stop regardless of AV configuration. Runtime: 28 minutes, guaranteed effectiveness.
+- **Smart Obstacle Mode**: "Efficient" precision for known threats. Detection-triggered pulses (laser 150ms 80%, LEDs 80ms 60%) conserve power while spoofing obstacles. Runtime: 1.2 hours, 95% energy savings.
+
+**Feasibility Validation**:
+- **Technical**: IR wavelengths chosen for AV sensor vulnerabilities (LiDAR: 1550nm, cameras: 850nm). MOSFET drivers handle 100mW laser + 10W LEDs safely.
+- **Safety**: DS18B20 monitoring prevents overheating (50°C shutdown), 10A fuse protects circuits, eye-safe irradiance levels.
+- **Practical**: <$342 BOM, <500g weight, 20x10x5cm enclosure fits backpack deployment.
+- **Testing**: CARLA simulation validates sensor disruption, hardware tests confirm GPIO/emitter functionality.
+
+## Project Documentation Overview
+
+### 📋 Development Roadmap (`docs/checklists.md`)
+**4-Week Build Plan** (Oct 11 - Nov 12, 2025):
+- **Week 1**: Hardware setup, parts ordering (~$342), basic wiring, GPIO testing
+- **Week 2**: Detection tuning (mmWave UART, photodiode), mode implementation, CARLA validation
+- **Week 3**: Functional testing (RC car demos), enclosure finalization
+- **Week 4**: Demo preparation, pitch refinement, judge presentation
+
+**Risk Mitigation**:
+- Hardware: Overheating (fan + temp monitoring), battery life (37Wh capacity), wiring shorts (multimeter testing)
+- Software: Detection false positives (threshold tuning), UART buffer overflow (baud rate adjustment)
+- Timeline: Parts expedite (Oct 18 arrival), manual trigger fallback (GPIO 26 button)
+
+### 🎯 Challenge Analysis (`docs/question.md`)
+**5W1H Framework**:
+- **WHO**: HTX + Microsoft organizers, first responder end-users, hackathon judges
+- **WHAT**: Non-destructive AV sensor disruption prototype (LiDAR/camera/radar jamming)
+- **WHERE**: Roadside deployment (ground/overhead bridge positioning)
+- **WHEN**: November 12, 2025 pitch deadline
+- **WHY**: Critical gap in hostile AV countermeasures (hijacked vehicles as "2-ton missiles")
+- **HOW**: IR emissions + mmWave detection, toggle-switchable dual modes
+
+**Judging Criteria Alignment**:
+- Innovation: Novel dual-mode hybrid approach
+- Functionality: >80% stop rate at 15m/20km/h (CARLA + hardware validation)
+- Practicality: Handheld, <$342, easy deployment
+- Problem Fit: Addresses sensor redundancy defeat (stretch goal)
+
+### 📊 Pitch Strategy (`docs/pitch_slides.md`)
+**9-Slide Presentation Structure**:
+1. **Title**: Dual-Mode AV Disruptor positioning
+2. **Problem**: AV threat gap + first responder needs
+3. **Solution**: Toggle-switchable modes + specs
+4. **Innovation**: Brute-force + precision hybrid
+5. **Functionality**: 15m range, multi-sensor disruption
+6. **Practicality**: Handheld deployment, cost breakdown
+7. **Demo**: Live RC car + CARLA simulation
+8. **Future**: Weatherproofing, ML detection
+9. **Conclusion**: Ready for real-world trials
+
+**Key Demo Elements**:
+- Toggle switch demonstration (mode switching)
+- RC car stop (<2s response time)
+- CARLA video (AV emergency braking)
+- Safety features (temp monitoring, fuse status)
+
+### 🔧 Build & Test Log (`docs/prototype_notes.md`)
+**Development Timeline**:
+- **Week 1**: RPi setup, project structure, GPIO blink tests
+- **Week 2**: Emitter wiring, detection integration, smoke mode visuals
+- **Week 3**: Smart mode tuning, CARLA simulation, RC car validation
+- **Week 4**: Enclosure printing, demo recording, final polish
+
+**Critical Metrics**:
+- **Stop Rate**: >80% success at 15m range
+- **Response Time**: <3s from detection to AV brake
+- **Runtime**: 28min smoke mode, 1.2h smart mode
+- **Safety**: <50°C operation, 10A fuse protection
+
+**Testing Protocols**:
+- CARLA: Inject LiDAR noise/camera whiteout, log vehicle control
+- Hardware: Phone camera IR visualization, RC car disruption
+- Edge Cases: Rain simulation, range limits, battery drain
 
 ## System Architecture
 The system integrates inputs (toggle switch, detection), processing (RPi GPIO/UART), outputs (laser/LED pulses), and safety checks. The state diagram below shows mode transitions, from boot to mode selection to emission loops, with safety interrupts. **Why included?** Visualizes runtime behavior—laymen see why dual modes exist (fail-safe vs. efficient), judges see safety integration.
