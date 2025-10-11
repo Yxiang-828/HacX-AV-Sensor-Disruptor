@@ -3,6 +3,7 @@ import time
 import numpy as np
 from drivers import EmitterDriver
 from temp_monitor import check_overheat
+from safety import check_safety
 
 # GPIO pins
 LIDAR_PIN = 18  # IR laser
@@ -15,8 +16,8 @@ def smoke_bomb_mode():
     laser = EmitterDriver(LIDAR_PIN)
     cam = EmitterDriver(CAM_PIN)
     while GPIO.input(MODE_PIN) == GPIO.HIGH:
-        if check_overheat():
-            print("Stopping due to overheat")
+        if not check_safety() or check_overheat():
+            print("Stopping due to safety/overheat")
             return
         for driver in [laser, cam]:
             driver.pulse(np.random.uniform(0.1, 0.5), duty=80)  # Random pulse, high power

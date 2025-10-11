@@ -70,7 +70,7 @@ Prototype for HacX hackathon (Nov 12, 2025). Non-destructive disruption of hosti
 ## Things to Note
 - **Hardware Risks**:
   - **Overheating**: Laser/LEDs hot in smoke mode (>5 min). Use `temp_monitor.py`; shutdown if >50°C. Add fan ($5) if persistent.
-  - **Battery**: Smoke (~80W, 5-10 min); smart (~30W, 20 min). Recharge between demos.
+  - **Battery**: Smoke (~80W, **28 min max**); smart (~30W, **1.2h**). Recharge between demos. Math: 10000mAh × 3.7V = 37Wh; 37Wh/80W = 0.46h, 37Wh/30W = 1.23h.
   - **Wiring**: Check MOSFET polarity (IRLZ44N: Gate to GPIO via 1kΩ). Test with `hardware_test.py` to avoid shorts.
   - **Range**: Rain/fog cuts laser ~20-30%. Test indoors; note for v2.
 
@@ -91,7 +91,7 @@ Prototype for HacX hackathon (Nov 12, 2025). Non-destructive disruption of hosti
 
 - **Timeline**:
   - Oct 12: Order parts (expedite for Oct 18).
-  - Week 2: If detection fails, use manual trigger (GPIO 24 button). Still meets brief.
+  - Week 2: If detection fails, use manual trigger (GPIO 26 button). Still meets brief.
   - Week 3-4: Polish enclosure, record demo.
 
 - **Budget**: ~$335. If over ($350 max), skip fan, use cheaper filament ($15).
