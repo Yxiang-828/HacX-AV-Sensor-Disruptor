@@ -166,16 +166,9 @@ python3 tests/hardware_test.py  # Tests GPIO, emitters, detection, temp, fan, fu
 **Why included?** Summarizes strengths for judges, links to `pitch_slides.md` (demo plan) and `prototype_notes.md` (test results).
 
 ## Immediate Actions (Oct 12, 2025, 12:22 AM +08)
-1. **Update README**: Save this file to repo root, replacing old README.
-2. **Commit Changes**:
-   ```bash
-   git add README.md
-   git commit -m "Updated README with fixed GPIO (18/19/22/23), enclosure status, demo metrics (>80% stop), CARLA setup, parts backup"
-   git push
-   ```
-3. **Order Parts**: From `hardware/parts_list.md` (Amazon Prime 2-day, AliExpress 5-day, ~$342). Backup: Local store (e.g., Sim Lim Square) for LEDs, resistors, fan. Target Oct 18 delivery.
-4. **Run CARLA**: Install on Ubuntu (GPU or VM, ~2h), test `tests/carla_test.py`. Log `vehicle.get_control()` for video by Oct 14.
-5. **Start STL**: Use Tinkercad (tinkercad.com, 30 min) for `hardware/enclosure.stl` (20x10x5 cm, holes per `schematic.txt`). Export by Oct 16.
-6. **Log Tests**: Add to `docs/prototype_notes.md`: “Oct 12: Updated README, started CARLA setup, tested GPIO 21/26.” Commit by Oct 14.
+1. **Order Parts**: From `hardware/parts_list.md` (Amazon Prime 2-day, AliExpress 5-day, ~$342). Backup: Local store (e.g., Sim Lim Square) for LEDs, resistors, fan. Target Oct 18 delivery.
+2. **Run CARLA**: Install on Ubuntu (GPU or VM, ~2h), test `tests/carla_test.py`. Log `vehicle.get_control()` for video by Oct 14.
+3. **Start STL**: Use Tinkercad (tinkercad.com, 30 min) for `hardware/enclosure.stl` (20x10x5 cm, holes per `schematic.txt`). Export by Oct 16.
+4. **Log Tests**: Add to `docs/prototype_notes.md`: “Oct 12: Updated README, started CARLA setup, tested GPIO 21/26.” Commit by Oct 14.
 
 *Built for HacX 2025 | Target: Top 3 | Deadline: Nov 12, 2025*
