@@ -13,7 +13,7 @@ GPIO.setup(PHOTODIODE_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP)  # Pull-up for sta
 def detect_signal(duration=0.1):
     """Detect AV sensors: mmWave for radar/motion, photodiode for LiDAR pulses"""
     detected = False
-    
+
     # mmWave radar detection (proxy for AV radar)
     try:
         ser = serial.Serial(UART_PORT, BAUDRATE, timeout=0.1)
@@ -25,7 +25,7 @@ def detect_signal(duration=0.1):
             detected = True
     except Exception as e:
         print(f"mmWave error: {e}")
-    
+
     # LiDAR pulse detection (IR photodiode)
     start_time = time.time()
     while time.time() - start_time < duration:
@@ -33,5 +33,5 @@ def detect_signal(duration=0.1):
             detected = True
             break
         time.sleep(0.001)  # Poll rate
-    
+
     return detected

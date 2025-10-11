@@ -7,10 +7,10 @@ class EmitterDriver:
         GPIO.setup(pin, GPIO.OUT)
         self.pwm = GPIO.PWM(pin, freq)
         self.pwm.start(0)  # Duty cycle 0-100
-    
+
     def set_power(self, duty_cycle):
         self.pwm.ChangeDutyCycle(duty_cycle)
-    
+
     def pulse(self, duration, duty=50):
         self.set_power(duty)
         time.sleep(duration)
