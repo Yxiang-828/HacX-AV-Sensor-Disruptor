@@ -4,3 +4,4 @@ pyserial
 w1thermsensor
 carla
 opencv-python
+flask
