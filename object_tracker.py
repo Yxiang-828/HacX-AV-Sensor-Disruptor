@@ -29,7 +29,7 @@ def mouse_handler(event, x, y, flags, param):
             frame_copy = temp_frame.copy()
             cv2.rectangle(frame_copy, (x0, y0), (x0 + w, y0 + h), (0, 255, 0), 2)
             cv2.imshow('Camera', frame_copy)
-            tracker = cv2.TrackerCSRT_create()
+            tracker = cv2.TrackerMIL_create()  # Using MIL tracker which is available in this OpenCV version
             tracker.init(temp_frame, bbox)
             tracking = True
             print(f'Tracker initialized at ({x0}, {y0}, {w}, {h})')
