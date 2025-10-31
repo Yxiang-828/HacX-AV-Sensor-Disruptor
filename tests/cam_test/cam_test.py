@@ -6,9 +6,9 @@ import time
 # Initialize Arduino serial connection
 # Change 'COM3' to your Arduino's COM port
 try:
-    arduino = serial.Serial('COM9', 9600, timeout=1)
+    arduino = serial.Serial('COM5', 9600, timeout=1)
     time.sleep(2)
-    print("✓ Connected to Arduino on COM9")
+    print("✓ Connected to Arduino on COM5")
 except:
     print("ERROR: Could not connect to Arduino!")
     print("Check COM port in Arduino IDE under Tools > Port")
@@ -53,12 +53,12 @@ def select_color(frame, x, y):
     """Select color from clicked position"""
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
     color = hsv[y, x]
-    
+
     # Create color range with tolerance
     tolerance = 20
     lower = np.array([max(0, color[0] - tolerance), 100, 100])
     upper = np.array([min(179, color[0] + tolerance), 255, 255])
-    
+
     return lower, upper
 
 # Mouse callback for color selection
@@ -76,60 +76,60 @@ while True:
     if not ret:
         print("Failed to grab frame")
         break
-    
+
     frame = cv2.flip(frame, 1)
     h, w, c = frame.shape
-    
+
     # Handle mouse click for color selection
     if click_x != -1 and click_y != -1:
         lower_color, upper_color = select_color(frame, click_x, click_y)
         color_selected = True
         print(f"✓ Color selected at ({click_x}, {click_y})")
         click_x, click_y = -1, -1
-    
+
     if color_selected and lower_color is not None:
         # Convert to HSV
         hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-        
+
         # Create mask for selected color
         mask = cv2.inRange(hsv, lower_color, upper_color)
-        
+
         # Remove noise
         kernel = np.ones((5, 5), np.uint8)
         mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN, kernel)
         mask = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, kernel)
-        
+
         # Find contours
         contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-        
+
         if contours:
             # Find largest contour
             largest_contour = max(contours, key=cv2.contourArea)
             area = cv2.contourArea(largest_contour)
-            
+
             if area > 500:  # Minimum area threshold
                 # Get center of contour
                 M = cv2.moments(largest_contour)
                 if M["m00"] != 0:
                     cx = int(M["m10"] / M["m00"])
                     cy = int(M["m01"] / M["m00"])
-                    
+
                     # Draw contour and center
                     cv2.drawContours(frame, [largest_contour], -1, (0, 255, 0), 2)
                     cv2.circle(frame, (cx, cy), 10, (0, 255, 0), -1)
-                    
+
                     # Map position to servo angles
                     target_pan = map_range(cx, 0, w, PAN_MIN, PAN_MAX)
                     target_tilt = map_range(cy, 0, h, TILT_MAX, TILT_MIN)
-                    
+
                     # Smooth movement
                     prev_pan = smooth_angle(prev_pan, target_pan, smooth_factor)
                     prev_tilt = smooth_angle(prev_tilt, target_tilt, smooth_factor)
-                    
+
                     # Send to Arduino
                     command = f"T{prev_tilt}P{prev_pan}\n"
                     arduino.write(command.encode())
-                    
+
                     # Display info
                     cv2.putText(frame, f"Tilt: {prev_tilt}", (10, 30),
                                cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
@@ -145,7 +145,7 @@ while True:
         else:
             cv2.putText(frame, "Color not detected", (10, h - 20),
                        cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 0, 255), 2)
-        
+
         # Show mask in corner
         mask_small = cv2.resize(mask, (160, 120))
         mask_color = cv2.cvtColor(mask_small, cv2.COLOR_GRAY2BGR)
@@ -155,17 +155,17 @@ while True:
                    cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 255), 2)
         cv2.putText(frame, "to select color to track", (10, 60),
                    cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 255), 2)
-    
+
     # Draw crosshair
     cv2.line(frame, (w//2 - 20, h//2), (w//2 + 20, h//2), (255, 0, 0), 2)
     cv2.line(frame, (w//2, h//2 - 20), (w//2, h//2 + 20), (255, 0, 0), 2)
-    
+
     # Instructions
     cv2.putText(frame, "s=Select | r=Reset | q=Quit", (10, h - 50),
                cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), 1)
-    
+
     cv2.imshow('Color Tracking - Servo Control', frame)
-    
+
     key = cv2.waitKey(1) & 0xFF
     if key == ord('q'):
         break

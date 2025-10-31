@@ -1,6 +1,6 @@
-numpy==1.26.4
-scipy==1.14.1
-pyserial==3.5
-RPi.GPIO==0.7.1
-w1thermsensor==2.0.0
-carla==0.9.15
+numpy
+scipy
+pyserial
+w1thermsensor
+carla
+opencv-python
