@@ -11,7 +11,7 @@ try:
 except:
     print("ERROR: Could not connect to Arduino. Check COM port!")
     print("Find your COM port in Arduino IDE under Tools > Port")
-    exit()
+    #exit()
 
 # Tracking variables
 drawing = False

@@ -297,7 +297,7 @@ if __name__ == '__main__':
         print("="*50 + "\n")
 
         # Run Flask server
-        app.run(host='0.0.0.0', port=5000, threaded=True, debug=False)
+        app.run(host='0.0.0.0', port=8080, threaded=True, debug=False)
     except KeyboardInterrupt:
         print("\n\n🛑 Shutting down...")
     finally:
